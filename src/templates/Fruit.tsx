@@ -2,14 +2,12 @@ import styled from "styled-components";
 
 import { FruitType } from "src/types/Fruit";
 
-const Fruit = ({ fruit, index }: { fruit: FruitType; index: number }) => {
+const Fruit = ({ fruit }: { fruit: FruitType }) => {
   const { id, name } = fruit;
 
   return (
     <List key={id}>
-      <span>
-        {index + 1}. {name}
-      </span>
+      <span>{name}</span>
     </List>
   );
 };
