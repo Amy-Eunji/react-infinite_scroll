@@ -1,14 +1,22 @@
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 
-const fetcher = async () => {
-  const { data } = await axios.get("http://localhost:8080/fruits");
+const fetchFruits = async ({ pageParam = 1 }) => {
+  const { data } = await axios.get(
+    `http://localhost:8080/fruits?page=${pageParam}`
+  );
   return data;
 };
 
 const useGetFruits = () => {
-  const { data } = useQuery(["fruits"], fetcher);
-  return { data };
+  return useInfiniteQuery("fruits", fetchFruits, {
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length > 0) {
+        return allPages.length + 1;
+      }
+      return null;
+    },
+  });
 };
 
 export default useGetFruits;
