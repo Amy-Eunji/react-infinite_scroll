@@ -1,10 +1,9 @@
+// useGetFruits.js
 import axios from "axios";
 import { useInfiniteQuery } from "react-query";
 
-const fetchFruits = async ({ pageParam = 1 }) => {
-  const { data } = await axios.get(
-    `http://localhost:8080/fruits?page=${pageParam}`
-  );
+const fetchFruits = async () => {
+  const { data } = await axios.get(`http://localhost:8080/fruits`);
   return data;
 };
 

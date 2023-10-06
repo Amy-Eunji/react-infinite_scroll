@@ -1,30 +1,31 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+
 import useGetFruits from "src/api/useGetFruits";
 import Fruit from "src/templates/Fruit";
 import { FruitType } from "src/types/Fruit";
 
 const Main = () => {
-  const ref = useRef<any>(null);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetFruits();
   const [loadData, setLoadData] = useState(false);
+  const ref = useRef<any>(null);
 
   const handleScroll = useCallback(() => {
-    if (ref.current) {
+    if (ref.current && !isFetchingNextPage) {
       const { clientHeight, scrollTop, scrollHeight } = ref.current;
       if (clientHeight + scrollTop >= scrollHeight - 1 && hasNextPage) {
         setLoadData(true);
       }
     }
-  }, [hasNextPage]);
+  }, [hasNextPage, isFetchingNextPage]);
 
   useEffect(() => {
-    if (loadData && !isFetchingNextPage) {
+    if (loadData) {
       fetchNextPage();
       setLoadData(false);
     }
-  }, [loadData, isFetchingNextPage, fetchNextPage]);
+  }, [loadData, fetchNextPage]);
 
   useEffect(() => {
     if (ref.current) {
