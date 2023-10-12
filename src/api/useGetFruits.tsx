@@ -9,10 +9,8 @@ const fetchFruits = async () => {
 const useGetFruits = () => {
   return useInfiniteQuery("fruits", fetchFruits, {
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length >= 0) {
-        return allPages.length + 1;
-      }
-      return null;
+      if (lastPage.length > 0) return undefined;
+      return allPages.length + 1;
     },
   });
 };
