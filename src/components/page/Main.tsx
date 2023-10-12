@@ -12,11 +12,13 @@ const Main = () => {
   const ref = useRef<any>(null);
 
   const handleScroll = useCallback(() => {
-    if (ref.current && !isFetchingNextPage) {
-      const { clientHeight, scrollTop, scrollHeight } = ref.current;
-      if (clientHeight + scrollTop >= scrollHeight - 1 && hasNextPage) {
-        setLoadData(true);
-      }
+    const { clientHeight, scrollTop, scrollHeight } = ref.current;
+    if (
+      clientHeight + scrollTop >= scrollHeight - 1 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      setLoadData(true);
     }
   }, [hasNextPage, isFetchingNextPage]);
 
@@ -52,7 +54,6 @@ const Main = () => {
               : null
           )}
       </List>
-      {isFetchingNextPage ? <div>로딩중 !</div> : null}
     </Container>
   );
 };
