@@ -6,28 +6,31 @@ import Fruit from "src/templates/Fruit";
 import { FruitType } from "src/types/Fruit";
 
 const Main = () => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useGetFruits();
-  const [loadData, setLoadData] = useState(false);
+  const { data } = useGetFruits();
+  const [page, setPage] = useState<number>(1);
+  const [load, setLoad] = useState<FruitType[]>([]);
   const ref = useRef<any>(null);
 
   const handleScroll = useCallback(() => {
-    const { clientHeight, scrollTop, scrollHeight } = ref.current;
-    if (
-      clientHeight + scrollTop >= scrollHeight - 1 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
-      setLoadData(true);
+    if (ref.current) {
+      const { clientHeight, scrollTop, scrollHeight } = ref.current;
+
+      if (clientHeight + scrollTop >= scrollHeight - 1) {
+        if (data.pages && data.pages[page]) {
+          setLoad((prevLoad) => prevLoad.concat(data.pages[page].data));
+          setPage((prevPage: number) => prevPage + 1);
+        }
+      }
     }
-  }, [hasNextPage, isFetchingNextPage]);
+  }, [data, page]);
 
   useEffect(() => {
-    if (loadData) {
-      fetchNextPage();
-      setLoadData(false);
+    if (data) {
+      if (data.pages && data.pages[page]) {
+        setLoad(data.pages[page].data);
+      }
     }
-  }, [loadData, fetchNextPage]);
+  }, [data]);
 
   useEffect(() => {
     if (ref.current) {
@@ -43,16 +46,11 @@ const Main = () => {
 
   return (
     <Container>
-      <Title>🍏 Infinite_Scroll 🍏</Title>
+      <Title>🍏 Infinite Scroll 🍏</Title>
       <List ref={ref}>
-        {data &&
-          data.pages.map((pageData) =>
-            Array.isArray(pageData)
-              ? pageData.map((fruit: FruitType) => (
-                  <Fruit key={fruit.id} fruit={fruit} />
-                ))
-              : null
-          )}
+        {data.map((fruit: FruitType) => (
+          <Fruit key={fruit.id} fruit={fruit} />
+        ))}
       </List>
     </Container>
   );
